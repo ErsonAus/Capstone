@@ -18,7 +18,7 @@ const commentSchema = new mongoose.Schema(
     createdAt: { type: Date, default: Date.now }
   },
   // { _id: false } - Prevents MongoDB from creating an _id field for each comment
-  { _id: false }
+  // { _id: false }
 )
 
 /**

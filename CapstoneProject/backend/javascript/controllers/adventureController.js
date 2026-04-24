@@ -1,6 +1,6 @@
 // Controller functions for adventure API operations
 // Handles list, create, delete, and comment creation.
-
+const transporter = require('../services/email.js')
 // Import the Adventure model for database operations
 const Adventure = require('../models/Adventure')
 
@@ -109,10 +109,47 @@ async function addComment(req, res) {
   }
 }
 
+
+
+const sendEmail = async (req, res) => {
+    try {
+        const { to, subject, message } = req.body;
+
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to,
+            subject,
+            text: message,
+            // or use html instead of text:
+            // html: `<h1>${message}</h1>`
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+
+        res.status(200).json({
+            message: 'Email sent successfully',
+            messageId: info.messageId
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
 // Export all controller functions to make them available for use in route handlers
 module.exports = {
   getAllAdventures,
   createAdventure,
   deleteAdventure,
-  addComment
+  addComment,sendEmail
 }
