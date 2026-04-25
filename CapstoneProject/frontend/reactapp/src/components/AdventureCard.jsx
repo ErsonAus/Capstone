@@ -1,232 +1,499 @@
-// AdventureCard Component
-// Adventure card component displays a single adventure with comprehensive UI
-// Includes image, details, cart button, delete button, and comment functionality.
+import { useState } from 'react'
+import {
+    Card, CardContent, CardMedia, CardActions,
+    Button, Typography, Box, Chip, Collapse,
+    TextField, IconButton, Divider, Avatar,
+    Dialog, DialogTitle, DialogContent, DialogActions,
+    DialogContentText
+} from '@mui/material'
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
+import CommentIcon from '@mui/icons-material/Comment'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
+import SendIcon from '@mui/icons-material/Send'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import LocationOnIcon from '@mui/icons-material/LocationOn'
+import WarningAmberIcon from '@mui/icons-material/WarningAmber'
+import { useCart } from './CartContext'
 
-/**
- * IMPORTS
- * Load required libraries and validation tools
- */
-
-// Import PropTypes for runtime type checking of component props
-import PropTypes from 'prop-types'
-
-/**
- * AdventureCard Component
- * Displays a single adventure as a card with full details and interactive features
- * 
- * @param {Object} props - Component props
- * @param {Object} props.adventure - Adventure object containing all adventure data
- * @param {string} props.adventure._id - Unique MongoDB ID of the adventure
- * @param {string} props.adventure.title - Title of the adventure
- * @param {string} props.adventure.location - Location where adventure takes place
- * @param {string} props.adventure.summary - Brief description of the adventure
- * @param {number} props.adventure.price - Price of the adventure
- * @param {string} props.adventure.image - URL to the adventure's image
- * @param {string} props.adventure.icon - Emoji icon representing the adventure
- * @param {Array} props.adventure.comments - Array of comment objects
- * @param {boolean} props.isActive - Whether the comment panel is currently visible
- * @param {Function} props.onToggle - Callback to toggle comment panel visibility
- * @param {Function} props.onDelete - Callback to delete the adventure
- * @param {Function} props.onAddToCart - Callback to add adventure to shopping cart
- * @param {Function} props.onAddComment - Callback to submit a new comment
- * @param {Object} props.commentInput - Current comment form input values
- * @param {Function} props.onCommentInputChange - Callback to update comment form inputs
- * @returns {JSX.Element} Adventure card component with all interactive elements
- */
-function AdventureCard({
-  adventure,
-  isActive,
-  onToggle,
-  onDelete,
-  onAddToCart,
-  onAddComment,
-  commentInput,
-  onCommentInputChange
-}) {
-  /**
-   * DESTRUCTURING
-   * Extract adventure properties with default values for optional fields
-   */
-  const {
-    // Unique MongoDB ID for this adventure
-    _id,
-    // Adventure title
-    title,
-    // Location of the adventure
-    location,
-    // Brief summary/description
-    summary,
-    // Price in dollars
-    price,
-    // URL to the adventure image
-    image,
-    // Emoji icon - defaults to compass if not provided
-    icon = '🧭',
-    // Array of user comments - defaults to empty array if not provided
-    comments = []
-  } = adventure
-
-  /**
-   * COMPONENT RENDER
-   * Return the complete adventure card JSX structure
-   */
-  return (
-    // Main article element for semantic HTML - represents a self-contained adventure
-    <article className="adventure-card">
-      
-      {/* IMAGE SECTION */}
-      {/* Container for the adventure's main image */}
-      <div className="card-media">
-        {/* Image element with title as alt text for accessibility */}
-        <img src={image} alt={title} />
-      </div>
-
-      {/* MAIN CONTENT SECTION */}
-      {/* Container for all adventure details and interactive elements */}
-      <div className="adventure-card-content">
-        
-        {/* HEADER SECTION - Icon and Title */}
-        {/* Header row displaying the adventure icon and title */}
-        <div className="adventure-card-header">
-          {/* Icon badge container */}
-          <div>
-            {/* Display the emoji icon that represents this adventure */}
-            <p className="icon-badge">{icon}</p>
-          </div>
-          {/* Adventure title heading */}
-          <h3>{title}</h3>
-        </div>
-
-        {/* METADATA SECTION */}
-        {/* Container for key adventure information: location, price, comment count */}
-        <div className="adventure-meta">
-          {/* Location with map pin emoji */}
-          <span>📍 {location}</span>
-          {/* Price with dollar emoji - formatted to whole number */}
-          <span>💲{price.toFixed(0)}</span>
-          {/* Number of comments posted on this adventure */}
-          <span>{comments.length} comments</span>
-        </div>
-
-        {/* DESCRIPTION SECTION */}
-        {/* Detailed summary/description of the adventure */}
-        <p className="adventure-card-details">{summary}</p>
-
-        {/* ACTION BUTTONS SECTION */}
-        {/* Row of interactive buttons for user actions */}
-        <div className="adventure-actions">
-          {/* Button to add this adventure to the user's shopping cart */}
-          <button className="button-primary" onClick={onAddToCart}>
-            Add to cart
-          </button>
-          
-          {/* Button to toggle visibility of the comment panel */}
-          <button className="button-secondary" onClick={onToggle}>
-            {/* Conditional text based on whether comments are currently visible */}
-            {isActive ? 'Hide comments' : 'Show comments'}
-          </button>
-          
-          {/* Button to delete this adventure */}
-          <button className="button-secondary" onClick={onDelete}>
-            Delete
-          </button>
-        </div>
-
-        {/* COMMENT PANEL SECTION */}
-        {/* Conditionally render comment panel only when isActive is true */}
-        {isActive && (
-          <section className="comment-panel">
-            {/* Comment section heading */}
-            <h4>Comments</h4>
-            
-            {/* LIST OF EXISTING COMMENTS */}
-            {/* Unordered list to display all user comments */}
-            <ul className="comment-list">
-              {/* Map through all comments and render each one */}
-              {comments.map((comment, index) => (
-                // List item for each comment - using index as key
-                <li key={index} className="comment-item">
-                  {/* Comment author name with chat emoji */}
-                  <strong>🗣 {comment.name}</strong>
-                  {/* The comment text content */}
-                  <p>{comment.text}</p>
-                </li>
-              ))}
-            </ul>
-
-            {/* ADD NEW COMMENT FORM */}
-            {/* Form for users to submit a new comment on this adventure */}
-            <form
-              className="comment-form"
-              onSubmit={(event) => {
-                // Prevent default form submission (page refresh)
-                event.preventDefault()
-                // Call the parent component's callback with the comment data
-                onAddComment({
-                  name: commentInput.name,
-                  text: commentInput.text
-                })
-              }}
-            >
-              {/* Name input - user's name for the comment */}
-              <input
-                type="text"
-                placeholder="Your name"
-                value={commentInput.name}
-                // Update the name field in parent component state when user types
-                onChange={(event) =>
-                  onCommentInputChange(_id, 'name', event.target.value)
-                }
-                required
-              />
-              
-              {/* Comment textarea - main comment content */}
-              <textarea
-                rows="3"
-                placeholder="Write a comment"
-                value={commentInput.text}
-                // Update the text field in parent component state when user types
-                onChange={(event) =>
-                  onCommentInputChange(_id, 'text', event.target.value)
-                }
-                required
-              />
-              
-              {/* Submit button to add the comment */}
-              <button type="submit" className="button-primary">
-                Add comment
-              </button>
-            </form>
-          </section>
-        )}
-      </div>
-    </article>
-  )
+// Shared MUI dark text field styles
+const darkFieldSx = {
+    '& .MuiOutlinedInput-root': {
+        color: '#FFFFFF',
+        '& fieldset': { borderColor: 'rgba(0, 56, 168, 0.4)' },
+        '&:hover fieldset': { borderColor: 'rgba(0, 56, 168, 0.7)' },
+        '&.Mui-focused fieldset': { borderColor: '#0038A8' },
+    },
+    '& .MuiInputLabel-root': { color: '#8899AA' },
+    '& .MuiInputLabel-root.Mui-focused': { color: '#A0B4CC' },
 }
 
-/**
- * PROP VALIDATION
- * Define and validate the types of props passed to this component
- * Ensures parent components pass correct data types
- */
-AdventureCard.propTypes = {
-  // adventure must be an object containing adventure data
-  adventure: PropTypes.object.isRequired,
-  // isActive must be a boolean indicating if comment panel is visible
-  isActive: PropTypes.bool.isRequired,
-  // onToggle must be a function to toggle comment panel visibility
-  onToggle: PropTypes.func.isRequired,
-  // onDelete must be a function to delete the adventure
-  onDelete: PropTypes.func.isRequired,
-  // onAddToCart must be a function to add adventure to shopping cart
-  onAddToCart: PropTypes.func.isRequired,
-  // onAddComment must be a function to submit a new comment
-  onAddComment: PropTypes.func.isRequired,
-  // commentInput must be an object containing name and text fields for form inputs
-  commentInput: PropTypes.object.isRequired,
-  // onCommentInputChange must be a function to update comment form inputs
-  onCommentInputChange: PropTypes.func.isRequired
+const AdventureCard = ({ adventure, onUpdate, onDelete }) => {
+    const { addToCart } = useCart()
+
+    // Cart
+    const [added, setAdded] = useState(false)
+
+    // Comments
+    const [commentsOpen, setCommentsOpen] = useState(false)
+    const [comments, setComments] = useState(adventure.comments || [])
+    const [newComment, setNewComment] = useState('')
+    const [editingCommentId, setEditingCommentId] = useState(null)
+    const [editCommentText, setEditCommentText] = useState('')
+
+    // Edit adventure modal
+    const [editOpen, setEditOpen] = useState(false)
+    const [editForm, setEditForm] = useState({
+        name: adventure.name || '',
+        location: adventure.location || '',
+        description: adventure.description || '',
+        price: adventure.price || '',
+        imageUrl: adventure.imageUrl || '',
+    })
+
+    // Delete adventure confirmation
+    const [deleteOpen, setDeleteOpen] = useState(false)
+
+    // ── Cart ──────────────────────────────────────────────────────────────
+    const handleAddToCart = () => {
+        addToCart(adventure)
+        setAdded(true)
+        setTimeout(() => setAdded(false), 1500)
+    }
+
+    // ── Edit Adventure ────────────────────────────────────────────────────
+    const handleEditSave = async () => {
+        try {
+            const res = await fetch(`http://localhost:5000/api/adventures/${adventure._id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(editForm)
+            })
+            const updated = await res.json()
+            onUpdate && onUpdate(updated)
+        } catch {
+            // Optimistic update if backend not ready
+            onUpdate && onUpdate({ ...adventure, ...editForm })
+        }
+        setEditOpen(false)
+    }
+
+    // ── Delete Adventure ──────────────────────────────────────────────────
+    const handleDeleteConfirm = async () => {
+        try {
+            await fetch(`http://localhost:5000/api/adventures/${adventure._id}`, {
+                method: 'DELETE'
+            })
+        } catch {}
+        onDelete && onDelete(adventure._id)
+        setDeleteOpen(false)
+    }
+
+    // ── Comments ──────────────────────────────────────────────────────────
+    const handleAddComment = async () => {
+        if (!newComment.trim()) return
+        try {
+            const res = await fetch(`http://localhost:5000/api/adventures/${adventure._id}/comments`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: newComment })
+            })
+            const data = await res.json()
+            setComments(data.comments || [...comments, { _id: Date.now().toString(), text: newComment, createdAt: new Date() }])
+        } catch {
+            setComments(prev => [...prev, { _id: Date.now().toString(), text: newComment, createdAt: new Date() }])
+        }
+        setNewComment('')
+    }
+
+    const handleEditComment = async (commentId) => {
+        if (!editCommentText.trim()) return
+        try {
+            const res = await fetch(`http://localhost:5000/api/adventures/${adventure._id}/comments/${commentId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: editCommentText })
+            })
+            const data = await res.json()
+            setComments(data.comments || comments.map(c => c._id === commentId ? { ...c, text: editCommentText } : c))
+        } catch {
+            setComments(prev => prev.map(c => c._id === commentId ? { ...c, text: editCommentText } : c))
+        }
+        setEditingCommentId(null)
+        setEditCommentText('')
+    }
+
+    const handleDeleteComment = async (commentId) => {
+        try {
+            await fetch(`http://localhost:5000/api/adventures/${adventure._id}/comments/${commentId}`, { method: 'DELETE' })
+        } catch {}
+        setComments(prev => prev.filter(c => c._id !== commentId))
+    }
+
+    return (
+        <>
+            <Card sx={{
+                background: 'linear-gradient(145deg, #0A1628 0%, #0D2144 100%)',
+                border: '1px solid rgba(0, 56, 168, 0.4)',
+                borderRadius: '12px',
+                overflow: 'hidden',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: '0 12px 40px rgba(0, 56, 168, 0.4)',
+                    border: '1px solid rgba(0, 56, 168, 0.8)',
+                }
+            }}>
+                {/* Image */}
+                <Box sx={{ position: 'relative' }}>
+                    <CardMedia
+                        component="img"
+                        height="200"
+                        image={adventure.imageUrl || `https://picsum.photos/seed/${adventure._id}/600/300`}
+                        alt={adventure.name}
+                        sx={{ objectFit: 'cover' }}
+                    />
+                    <Box sx={{
+                        position: 'absolute', bottom: 0, left: 0, right: 0, height: '4px',
+                        background: 'linear-gradient(90deg, #00008B 33%, #CC0000 33%, #CC0000 66%, #FFFFFF 66%)'
+                    }} />
+                    {adventure.price && (
+                        <Chip
+                            label={`$${adventure.price}`}
+                            sx={{
+                                position: 'absolute', top: 12, right: 12,
+                                background: 'linear-gradient(135deg, #CC0000, #FF1A1A)',
+                                color: '#fff', fontWeight: 700, fontSize: '0.9rem',
+                                border: '2px solid rgba(255,255,255,0.3)'
+                            }}
+                        />
+                    )}
+                    {/* Edit / Delete buttons on image */}
+                    <Box sx={{ position: 'absolute', top: 8, left: 8, display: 'flex', gap: 0.5 }}>
+                        <IconButton
+                            size="small"
+                            onClick={() => setEditOpen(true)}
+                            sx={{
+                                background: 'rgba(0,56,168,0.85)',
+                                color: '#fff',
+                                backdropFilter: 'blur(4px)',
+                                '&:hover': { background: '#0038A8' }
+                            }}
+                        >
+                            <EditIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton
+                            size="small"
+                            onClick={() => setDeleteOpen(true)}
+                            sx={{
+                                background: 'rgba(204,0,0,0.85)',
+                                color: '#fff',
+                                backdropFilter: 'blur(4px)',
+                                '&:hover': { background: '#CC0000' }
+                            }}
+                        >
+                            <DeleteIcon fontSize="small" />
+                        </IconButton>
+                    </Box>
+                </Box>
+
+                <CardContent sx={{ pb: 1 }}>
+                    <Typography variant="h6" sx={{
+                        color: '#FFFFFF', fontFamily: '"Playfair Display", serif', fontWeight: 700, mb: 0.5
+                    }}>
+                        {adventure.name}
+                    </Typography>
+                    {adventure.location && (
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 1 }}>
+                            <LocationOnIcon sx={{ fontSize: 16, color: '#CC0000' }} />
+                            <Typography variant="body2" sx={{ color: '#A0B4CC' }}>{adventure.location}</Typography>
+                        </Box>
+                    )}
+                    <Typography variant="body2" sx={{
+                        color: '#8899AA', lineHeight: 1.6,
+                        display: '-webkit-box', WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical', overflow: 'hidden'
+                    }}>
+                        {adventure.description}
+                    </Typography>
+                </CardContent>
+
+                <CardActions sx={{ px: 2, pb: 1, gap: 1 }}>
+                    <Button
+                        variant="contained"
+                        startIcon={<ShoppingCartIcon />}
+                        onClick={handleAddToCart}
+                        size="small"
+                        sx={{
+                            background: added
+                                ? 'linear-gradient(135deg, #006400, #008000)'
+                                : 'linear-gradient(135deg, #CC0000, #FF1A1A)',
+                            color: '#fff', fontWeight: 600, flex: 1, transition: 'all 0.3s ease',
+                            '&:hover': { background: 'linear-gradient(135deg, #AA0000, #DD0000)' }
+                        }}
+                    >
+                        {added ? '✓ Added!' : 'Add to Cart'}
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        startIcon={<CommentIcon />}
+                        onClick={() => setCommentsOpen(!commentsOpen)}
+                        size="small"
+                        sx={{
+                            borderColor: 'rgba(0, 56, 168, 0.6)', color: '#A0B4CC',
+                            '&:hover': { borderColor: '#0038A8', background: 'rgba(0, 56, 168, 0.1)' }
+                        }}
+                    >
+    {comments.length} {comments.length === 1 ? 'Comment' : 'Comments'}
+                        <ExpandMoreIcon sx={{
+                            ml: 0.5, fontSize: 16,
+                            transform: commentsOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                            transition: 'transform 0.3s ease'
+                        }} />
+                    </Button>
+                </CardActions>
+
+                {/* Comments */}
+                <Collapse in={commentsOpen}>
+                    <Divider sx={{ borderColor: 'rgba(0, 56, 168, 0.3)' }} />
+                    <Box sx={{ p: 2 }}>
+                        <Typography variant="subtitle2" sx={{ color: '#A0B4CC', mb: 1.5 }}>
+                            Anonymous Comments
+                        </Typography>
+                        <Box sx={{ maxHeight: 200, overflowY: 'auto', mb: 2 }}>
+                            {comments.length === 0 && (
+                                <Typography variant="body2" sx={{ color: '#556677', fontStyle: 'italic' }}>
+                                    No comments yet. Be the first!
+                                </Typography>
+                            )}
+                            {comments.map((comment) => (
+                                <Box key={comment._id} sx={{
+                                    display: 'flex', alignItems: 'flex-start', gap: 1, mb: 1.5,
+                                    p: 1.5, background: 'rgba(0, 56, 168, 0.1)',
+                                    borderRadius: '8px', border: '1px solid rgba(0, 56, 168, 0.2)'
+                                }}>
+                                    <Avatar sx={{
+                                        width: 28, height: 28, fontSize: '0.7rem',
+                                        background: 'linear-gradient(135deg, #0038A8, #CC0000)', flexShrink: 0
+                                    }}>:kangaroo:</Avatar>
+                                    <Box sx={{ flex: 1 }}>
+                                        {editingCommentId === comment._id ? (
+                                            <Box sx={{ display: 'flex', gap: 1 }}>
+                                                <TextField
+                                                    value={editCommentText}
+                                                    onChange={e => setEditCommentText(e.target.value)}
+                                                    size="small" fullWidth multiline
+                                                    sx={{ '& .MuiOutlinedInput-root': { color: '#fff', '& fieldset': { borderColor: 'rgba(0,56,168,0.5)' } } }}
+                                                />
+                                                <IconButton size="small" onClick={() => handleEditComment(comment._id)} sx={{ color: '#4CAF50' }}>
+                                                    <SendIcon fontSize="small" />
+                                                </IconButton>
+                                            </Box>
+                                        ) : (
+                                            <>
+                                                <Typography variant="body2" sx={{ color: '#CCD9E8', lineHeight: 1.5 }}>
+                                                    {comment.text}
+                                                </Typography>
+                                                <Typography variant="caption" sx={{ color: '#556677' }}>
+                                                    Anonymous • {new Date(comment.createdAt).toLocaleDateString()}
+                                                </Typography>
+                                            </>
+                                        )}
+                                    </Box>
+                                    {editingCommentId !== comment._id && (
+                                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                            <IconButton size="small" onClick={() => { setEditingCommentId(comment._id); setEditCommentText(comment.text) }} sx={{ color: '#A0B4CC', p: 0.5 }}>
+                                                <EditIcon fontSize="small" />
+                                            </IconButton>
+                                            <IconButton size="small" onClick={() => handleDeleteComment(comment._id)} sx={{ color: '#CC0000', p: 0.5 }}>
+                                                <DeleteIcon fontSize="small" />
+                                            </IconButton>
+                                        </Box>
+                                    )}
+                                </Box>
+                            ))}
+                        </Box>
+                        <Box sx={{ display: 'flex', gap: 1 }}>
+                            <TextField
+                                value={newComment}
+                                onChange={e => setNewComment(e.target.value)}
+                                placeholder="Add an anonymous comment..."
+                                size="small" fullWidth multiline maxRows={3}
+                                onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleAddComment()}
+                                sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                        color: '#FFFFFF', fontSize: '0.85rem',
+                                        '& fieldset': { borderColor: 'rgba(0, 56, 168, 0.4)' },
+                                        '&:hover fieldset': { borderColor: 'rgba(0, 56, 168, 0.7)' },
+                                        '&.Mui-focused fieldset': { borderColor: '#0038A8' },
+                                    },
+                                    '& .MuiInputBase-input::placeholder': { color: '#556677' }
+                                }}
+                            />
+                            <IconButton onClick={handleAddComment} sx={{
+                                background: 'linear-gradient(135deg, #0038A8, #0050DD)', color: '#fff',
+                                '&:hover': { background: 'linear-gradient(135deg, #002888, #0038A8)' }
+                            }}>
+                                <SendIcon fontSize="small" />
+                            </IconButton>
+                        </Box>
+                    </Box>
+                </Collapse>
+            </Card>
+
+            {/* ── Edit Adventure Modal ─────────────────────────────────────── */}
+            <Dialog
+                open={editOpen}
+                onClose={() => setEditOpen(false)}
+                maxWidth="sm"
+                fullWidth
+                PaperProps={{
+                    sx: {
+                        background: 'linear-gradient(145deg, #0A1628, #0D2144)',
+                        border: '1px solid rgba(0, 56, 168, 0.5)',
+                        borderRadius: '16px',
+                    }
+                }}
+            >
+                <DialogTitle sx={{
+                    color: '#FFFFFF',
+                    fontFamily: '"Playfair Display", serif',
+                    fontSize: '1.4rem',
+                    borderBottom: '1px solid rgba(0,56,168,0.3)',
+                    pb: 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1
+                }}>
+                    <EditIcon sx={{ color: '#0038A8' }} />
+                    Edit Adventure
+                </DialogTitle>
+
+                <DialogContent sx={{ pt: 3, display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+                    <TextField
+                        label="Adventure Name"
+                        fullWidth
+                        value={editForm.name}
+                        onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))}
+                        sx={darkFieldSx}
+                    />
+                    <TextField
+                        label="Location"
+                        fullWidth
+                        value={editForm.location}
+                        onChange={e => setEditForm(f => ({ ...f, location: e.target.value }))}
+                        sx={darkFieldSx}
+                    />
+                    <TextField
+                        label="Description"
+                        fullWidth
+                        multiline
+                        rows={4}
+                        value={editForm.description}
+                        onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))}
+                        sx={darkFieldSx}
+                    />
+                    <TextField
+                        label="Price (AUD)"
+                        fullWidth
+                        type="number"
+                        value={editForm.price}
+                        onChange={e => setEditForm(f => ({ ...f, price: e.target.value }))}
+                        sx={darkFieldSx}
+                    />
+                    <TextField
+                        label="Image URL (optional)"
+                        fullWidth
+                        value={editForm.imageUrl}
+                        onChange={e => setEditForm(f => ({ ...f, imageUrl: e.target.value }))}
+                        sx={darkFieldSx}
+                    />
+                </DialogContent>
+
+                <DialogActions sx={{ p: 3, gap: 1, borderTop: '1px solid rgba(0,56,168,0.3)' }}>
+                    <Button
+                        onClick={() => setEditOpen(false)}
+                        sx={{ color: '#8899AA', '&:hover': { color: '#FFFFFF', background: 'rgba(255,255,255,0.05)' } }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={handleEditSave}
+                        variant="contained"
+                        sx={{
+                            background: 'linear-gradient(135deg, #0038A8, #0050DD)',
+                            px: 3,
+                            '&:hover': { background: 'linear-gradient(135deg, #002888, #0038A8)' }
+                        }}
+                    >
+                        Save Changes
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* ── Delete Confirmation Dialog ───────────────────────────────── */}
+            <Dialog
+                open={deleteOpen}
+                onClose={() => setDeleteOpen(false)}
+                PaperProps={{
+                    sx: {
+                        background: 'linear-gradient(145deg, #0A1628, #0D2144)',
+                        border: '1px solid rgba(204, 0, 0, 0.5)',
+                        borderRadius: '16px',
+                        minWidth: 360
+                    }
+                }}
+            >[9:59]<DialogTitle sx={{
+                    color: '#FFFFFF',
+                    fontFamily: '"Playfair Display", serif',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    borderBottom: '1px solid rgba(204,0,0,0.3)',
+                    pb: 2
+                }}>
+                    <WarningAmberIcon sx={{ color: '#CC0000' }} />
+                    Delete Adventure?
+                </DialogTitle>
+
+                <DialogContent sx={{ pt: 3 }}>
+                    <DialogContentText sx={{ color: '#A0B4CC', lineHeight: 1.7 }}>
+                        Are you sure you want to delete{' '}
+                        <Box component="span" sx={{ color: '#FFFFFF', fontWeight: 700 }}>
+                            {adventure.name}
+                        </Box>
+                        ? This action cannot be undone.
+                    </DialogContentText>
+                </DialogContent>
+
+                <DialogActions sx={{ p: 3, gap: 1, borderTop: '1px solid rgba(204,0,0,0.3)' }}>
+                    <Button
+                        onClick={() => setDeleteOpen(false)}
+                        variant="outlined"
+                        sx={{
+                            borderColor: 'rgba(0,56,168,0.5)',
+                            color: '#A0B4CC',
+                            '&:hover': { borderColor: '#0038A8', background: 'rgba(0,56,168,0.1)' }
+                        }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={handleDeleteConfirm}
+                        variant="contained"
+                        startIcon={<DeleteIcon />}
+                        sx={{
+                            background: 'linear-gradient(135deg, #CC0000, #FF1A1A)',
+                            px: 3,
+                            '&:hover': { background: 'linear-gradient(135deg, #AA0000, #DD0000)' }
+                        }}
+                    >
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
+    )
 }
 
-// Export the AdventureCard component as the default export
 export default AdventureCard
