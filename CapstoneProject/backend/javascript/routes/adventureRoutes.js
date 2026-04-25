@@ -36,7 +36,16 @@ router.post('/', adventureController.createAdventure)
  * Returns: Success response or 404 error if adventure not found
  */
 router.delete('/:id', adventureController.deleteAdventure)
-
+/**
+ * PUT /:id - Update an adventure by ID
+ * HTTP Method: PUT
+ * Endpoint: /:id (where :id is the adventure's MongoDB ID)
+ * Handler: editAdventure controller function
+ * URL Parameter: id - The unique identifier of the adventure to update
+ * Request Body: Should contain the fields to update
+ * Returns: Success response or 404 error if adventure not found
+ */
+router.put('/:id', adventureController.editAdventure)
 /**
  * POST /:id/comments - Add a comment to an existing adventure
  * HTTP Method: POST

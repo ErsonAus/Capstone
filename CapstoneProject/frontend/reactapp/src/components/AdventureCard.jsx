@@ -44,11 +44,11 @@ const AdventureCard = ({ adventure, onUpdate, onDelete }) => {
     // Edit adventure modal
     const [editOpen, setEditOpen] = useState(false)
     const [editForm, setEditForm] = useState({
-        name: adventure.name || '',
+        title: adventure.title || '',
         location: adventure.location || '',
-        description: adventure.description || '',
+        summary: adventure.summary || '',
         price: adventure.price || '',
-        imageUrl: adventure.imageUrl || '',
+        image: adventure.image? adventure.image : `https://picsum.photos/seed/${adventure._id}/600/300`,
     })
 
     // Delete adventure confirmation
@@ -63,6 +63,7 @@ const AdventureCard = ({ adventure, onUpdate, onDelete }) => {
 
     // ── Edit Adventure ────────────────────────────────────────────────────
     const handleEditSave = async () => {
+    console.log('Saving adventure with data:', editForm)
         try {
             const res = await fetch(`http://localhost:5000/api/adventures/${adventure._id}`, {
                 method: 'PUT',
@@ -133,6 +134,10 @@ const AdventureCard = ({ adventure, onUpdate, onDelete }) => {
     return (
         <>
             <Card sx={{
+    height: '100%', // ← fills the grid item  
+     display: 'flex', // ← needed for column layout  
+      flexDirection: 'column', // ← stacks content vertically  
+      
                 background: 'linear-gradient(145deg, #0A1628 0%, #0D2144 100%)',
                 border: '1px solid rgba(0, 56, 168, 0.4)',
                 borderRadius: '12px',
@@ -149,8 +154,8 @@ const AdventureCard = ({ adventure, onUpdate, onDelete }) => {
                     <CardMedia
                         component="img"
                         height="200"
-                        image={adventure.imageUrl || `https://picsum.photos/seed/${adventure._id}/600/300`}
-                        alt={adventure.name}
+                        image={adventure.image || `https://picsum.photos/seed/${adventure._id}/600/300`}
+                        alt={adventure.title}
                         sx={{ objectFit: 'cover' }}
                     />
                     <Box sx={{
@@ -197,11 +202,11 @@ const AdventureCard = ({ adventure, onUpdate, onDelete }) => {
                     </Box>
                 </Box>
 
-                <CardContent sx={{ pb: 1 }}>
+                <CardContent sx={{ pb: 1, flexGrow: 1 }}>
                     <Typography variant="h6" sx={{
                         color: '#FFFFFF', fontFamily: '"Playfair Display", serif', fontWeight: 700, mb: 0.5
                     }}>
-                        {adventure.name}
+                        {adventure.title}
                     </Typography>
                     {adventure.location && (
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 1 }}>
@@ -214,7 +219,7 @@ const AdventureCard = ({ adventure, onUpdate, onDelete }) => {
                         display: '-webkit-box', WebkitLineClamp: 3,
                         WebkitBoxOrient: 'vertical', overflow: 'hidden'
                     }}>
-                        {adventure.description}
+                        {adventure.summary}
                     </Typography>
                 </CardContent>
 
@@ -373,8 +378,8 @@ const AdventureCard = ({ adventure, onUpdate, onDelete }) => {
                     <TextField
                         label="Adventure Name"
                         fullWidth
-                        value={editForm.name}
-                        onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))}
+                        value={editForm.title}
+                        onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))}
                         sx={darkFieldSx}
                     />
                     <TextField
@@ -389,8 +394,8 @@ const AdventureCard = ({ adventure, onUpdate, onDelete }) => {
                         fullWidth
                         multiline
                         rows={4}
-                        value={editForm.description}
-                        onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))}
+                        value={editForm.summary}
+                        onChange={e => setEditForm(f => ({ ...f, summary: e.target.value }))}
                         sx={darkFieldSx}
                     />
                     <TextField
@@ -404,8 +409,8 @@ const AdventureCard = ({ adventure, onUpdate, onDelete }) => {
                     <TextField
                         label="Image URL (optional)"
                         fullWidth
-                        value={editForm.imageUrl}
-                        onChange={e => setEditForm(f => ({ ...f, imageUrl: e.target.value }))}
+                        value={editForm.image}
+                        onChange={e => setEditForm(f => ({ ...f, image: e.target.value }))}
                         sx={darkFieldSx}
                     />
                 </DialogContent>
@@ -443,7 +448,7 @@ const AdventureCard = ({ adventure, onUpdate, onDelete }) => {
                         minWidth: 360
                     }
                 }}
-            >[9:59]<DialogTitle sx={{
+            ><DialogTitle sx={{
                     color: '#FFFFFF',
                     fontFamily: '"Playfair Display", serif',
                     display: 'flex',
@@ -460,7 +465,7 @@ const AdventureCard = ({ adventure, onUpdate, onDelete }) => {
                     <DialogContentText sx={{ color: '#A0B4CC', lineHeight: 1.7 }}>
                         Are you sure you want to delete{' '}
                         <Box component="span" sx={{ color: '#FFFFFF', fontWeight: 700 }}>
-                            {adventure.name}
+                            {adventure.title}
                         </Box>
                         ? This action cannot be undone.
                     </DialogContentText>

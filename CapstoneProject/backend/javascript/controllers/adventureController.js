@@ -78,6 +78,34 @@ async function deleteAdventure(req, res) {
 }
 
 /**
+ * updateAdventure - Updates an adventure from the database by ID
+ * @param {Object} req - Express request object containing adventure ID in req.params
+ * @param {Object} res - Express response object
+ * @returns {JSON} Success message or error response
+ */
+async function editAdventure(req, res) {
+  try {
+    // Extract the adventure ID from the URL parameters
+    const { id } = req.params
+    const body = req.body
+    console.log (req.body)
+    // Find the adventure by ID and updates it from the database in one operation
+    const edited = await Adventure.findByIdAndUpdate(id, body)
+    // Check if the adventure was found and edited
+    if (!edited) {
+      // Return a 404 error if the adventure does not exist
+      return res.status(404).json({ error: 'Adventure not found' })
+    }
+    // Return a success response if updation was successful
+    res.json({ success: true })
+  } catch (error) {
+    // Handle any database or server errors with a 500 status code
+    res.status(500).json({ error: 'Unable to update adventure' })
+  }
+}
+
+
+/**
  * addComment - Adds a comment to an existing adventure
  * @param {Object} req - Express request object containing adventure ID in req.params and comment data in req.body
  * @param {Object} res - Express response object
@@ -151,5 +179,6 @@ module.exports = {
   getAllAdventures,
   createAdventure,
   deleteAdventure,
-  addComment,sendEmail
+  addComment,sendEmail,
+  editAdventure
 }
