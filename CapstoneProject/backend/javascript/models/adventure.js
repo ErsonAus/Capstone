@@ -11,7 +11,7 @@ const mongoose = require('mongoose')
 const commentSchema = new mongoose.Schema(
   {
     // Author name of the comment - required field, whitespace trimmed automatically
-    name: { type: String, required: true, trim: true },
+    name: { type: String, required: false, trim: true },
     // The comment text content - required field, whitespace trimmed automatically
     text: { type: String, required: true, trim: true },
     // Timestamp when the comment was created - automatically set to current date/time
