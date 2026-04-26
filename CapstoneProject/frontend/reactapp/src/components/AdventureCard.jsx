@@ -137,7 +137,7 @@ const AdventureCard = ({ adventure, onUpdate, onDelete }) => {
     height: '100%', // ← fills the grid item  
      display: 'flex', // ← needed for column layout  
       flexDirection: 'column', // ← stacks content vertically  
-      
+    
                 background: 'linear-gradient(145deg, #0A1628 0%, #0D2144 100%)',
                 border: '1px solid rgba(0, 56, 168, 0.4)',
                 borderRadius: '12px',
@@ -153,7 +153,8 @@ const AdventureCard = ({ adventure, onUpdate, onDelete }) => {
                 <Box sx={{ position: 'relative' }}>
                     <CardMedia
                         component="img"
-                        height="200"
+                        height="300"
+                        width="600"
                         image={adventure.image || `https://picsum.photos/seed/${adventure._id}/600/300`}
                         alt={adventure.title}
                         sx={{ objectFit: 'cover' }}
