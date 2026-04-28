@@ -21,7 +21,7 @@ const darkFieldSx = {
 
 const EMPTY_FORM = { title: '', location: '', summary: '', price: '', image: '' }
 
-const Adventures = () => {
+const Adventures = ({isAdmin}) => {
     const [adventures, setAdventures] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -131,27 +131,27 @@ const Adventures = () => {
                         Your data stays yours — your memories don't have to.
                     </Typography>
 
-                    <Button
-                        variant="contained"
-                        startIcon={<AddIcon />}
-                        onClick={handleAddOpen}
-                        size="large"
-                        sx={{
-                            background: 'linear-gradient(135deg, #0038A8, #0050DD)',
-                            px: 4, py: 1.5,
-                            fontSize: '1rem',
-                            fontWeight: 700,
-                            borderRadius: '12px',
-                            boxShadow: '0 4px 20px rgba(0, 56, 168, 0.4)',
-                            '&:hover': {
-                                background: 'linear-gradient(135deg, #002888, #0038A8)',
-                                transform: 'translateY(-2px)'
-                            },
-                            transition: 'all 0.2s ease'
-                        }}
-                    >
-                        Add Adventure
-                    </Button>
+                    {isAdmin?<Button
+                        variant="contained"
+                        startIcon={<AddIcon />}
+                        onClick={handleAddOpen}
+                        size="large"
+                        sx={{
+                            background: 'linear-gradient(135deg, #0038A8, #0050DD)',
+                            px: 4, py: 1.5,
+                            fontSize: '1rem',
+                            fontWeight: 700,
+                            borderRadius: '12px',
+                            boxShadow: '0 4px 20px rgba(0, 56, 168, 0.4)',
+                            '&:hover': {
+                                background: 'linear-gradient(135deg, #002888, #0038A8)',
+                                transform: 'translateY(-2px)'
+                            },
+                            transition: 'all 0.2s ease'
+                        }}
+                    >
+                        Add Adventure
+                    </Button>: null}
                 </Box>
 
                 {loading && (
@@ -166,7 +166,7 @@ const Adventures = () => {
                     </Alert>
                 )}
 
-                <Grid container spacing={3} sx={{ mx: 0, width: '100%' }}>{adventures.map((adventure) => (<Grid size={{ xs: 12, sm: 6, md: 4 }} key={adventure._id} sx={{ display: 'flex' }}>  <AdventureCard adventure={adventure} onUpdate={handleUpdate} onDelete={handleDelete} />  </Grid>))} </Grid>
+               <Grid container spacing={3} sx={{ mx: 0, width: '100%' }}>{adventures.map((adventure) => (<Grid size={{ xs: 12, sm: 6, md: 4 }} key={adventure._id} sx={{ display: 'flex' }}>  <AdventureCard adventure={adventure} onUpdate={handleUpdate} onDelete={handleDelete} isAdmin={isAdmin} />  </Grid>))} </Grid>
             </Container>
 
             {/* ── Add Adventure Modal ──────────────────────────────────────── */}

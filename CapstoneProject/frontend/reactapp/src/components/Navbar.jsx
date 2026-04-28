@@ -1,9 +1,12 @@
-import { AppBar, Toolbar, Typography, Button, Badge, Box } from '@mui/material'
+import { AppBar, Toolbar, Typography, Button, Badge, Box, IconButton, Tooltip } from '@mui/material'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
+import LockIcon from '@mui/icons-material/Lock'
+import LockOpenIcon from '@mui/icons-material/LockOpen'
 import { useCart } from './CartContext'
 import { Link, useLocation } from 'react-router-dom'
+import { useState } from 'react'
 
-const Navbar = () => {
+const Navbar = ({isAdmin, handleAdminToggle}) => {
     const { cartCount } = useCart()
     const location = useLocation()
 
@@ -15,7 +18,6 @@ const Navbar = () => {
         }}>
             <Toolbar sx={{ justifyContent: 'space-between' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                    {/* Mini Australian flag stars */}
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.2 }}>
                         {['★', '★', '★'].map((star, i) => (
                             <Typography key={i} sx={{ color: '#FFFFFF', fontSize: '8px', lineHeight: 1 }}>{star}</Typography>
@@ -28,7 +30,7 @@ const Navbar = () => {
                         letterSpacing: '0.05em',
                         textDecoration: 'none'
                     }} component={Link} to="/">
-                        :kangaroo: Aussie Adventures
+                       🦘 Aussie Adventures
                     </Typography>
                 </Box>
 
@@ -62,10 +64,31 @@ const Navbar = () => {
                     >
                         Cart
                     </Button>
+
+                    {/* Admin toggle */}
+                    <Tooltip title={isAdmin ? 'Admin mode on — click to lock' : 'Click to enter admin mode'}>
+                        <IconButton
+                            onClick={handleAdminToggle}
+                            sx={{
+                                color: isAdmin ? '#4CAF50' : '#A0B4CC',
+                                border: `1px solid ${isAdmin ? '#4CAF50' : 'rgba(160,180,204,0.3)'}`,
+                                borderRadius: '8px',
+                                padding: '6px',
+                                transition: 'all 0.3s ease',
+                                '&:hover': {
+                                    background: isAdmin
+                                        ? 'rgba(76,175,80,0.1)'
+                                        : 'rgba(160,180,204,0.1)',
+                                    borderColor: isAdmin ? '#4CAF50' : '#A0B4CC'
+                                }
+                            }}
+                        >
+                            {isAdmin ? <LockOpenIcon fontSize="small" /> : <LockIcon fontSize="small" />}
+                        </IconButton>
+                    </Tooltip>
                 </Box>
             </Toolbar>
 
-            {/* Red/white/blue stripe below navbar */}
             <Box sx={{
                 height: '3px',
                 background: 'linear-gradient(90deg, #CC0000 33%, #FFFFFF 33%, #FFFFFF 66%, #0038A8 66%)'

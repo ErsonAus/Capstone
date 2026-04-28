@@ -16,7 +16,8 @@ const adventureController = require('../controllers/adventureController')
  * Returns: Array of all adventures from the database, sorted by title
  */
 router.get('/', adventureController.getAllAdventures)
-router.get('/email', adventureController.sendEmail)
+router.post('/email', adventureController.sendEmail)
+router.post('/bulkadd', adventureController.findOrInsert)
 /**
  * POST / - Create a new adventure
  * HTTP Method: POST

@@ -28,7 +28,7 @@ const darkFieldSx = {
     '& .MuiInputLabel-root.Mui-focused': { color: '#A0B4CC' },
 }
 
-const AdventureCard = ({ adventure, onUpdate, onDelete }) => {
+const AdventureCard = ({ adventure, onUpdate, onDelete, isAdmin }) => {
     const { addToCart } = useCart()
 
     // Cart
@@ -176,7 +176,7 @@ const AdventureCard = ({ adventure, onUpdate, onDelete }) => {
                     )}
                     {/* Edit / Delete buttons on image */}
                     <Box sx={{ position: 'absolute', top: 8, left: 8, display: 'flex', gap: 0.5 }}>
-                        <IconButton
+                        {isAdmin? <IconButton
                             size="small"
                             onClick={() => setEditOpen(true)}
                             sx={{
@@ -187,8 +187,8 @@ const AdventureCard = ({ adventure, onUpdate, onDelete }) => {
                             }}
                         >
                             <EditIcon fontSize="small" />
-                        </IconButton>
-                        <IconButton
+                        </IconButton>: null}
+                        {isAdmin?<IconButton
                             size="small"
                             onClick={() => setDeleteOpen(true)}
                             sx={{
@@ -199,7 +199,7 @@ const AdventureCard = ({ adventure, onUpdate, onDelete }) => {
                             }}
                         >
                             <DeleteIcon fontSize="small" />
-                        </IconButton>
+                        </IconButton>: null}
                     </Box>
                 </Box>
 

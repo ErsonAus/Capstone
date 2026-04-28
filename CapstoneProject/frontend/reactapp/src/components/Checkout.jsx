@@ -34,15 +34,16 @@ const Checkout = () => {
 
         try {
             // Send confirmation email
-            await fetch('http://localhost:5000/api/email/send', {
+            await fetch('http://localhost:5000/api/adventures/email/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    to: email,
-                    subject: ':kangaroo: Your Aussie Adventure Booking Confirmation!',
-                    name: 'Adventurer',
-                    message: `You've booked: ${cart.map(i => `${i.name} (x${i.quantity})`).join(', ')}. Total: $${cartTotal.toFixed(2)} AUD. Get ready for an incredible adventure!`
-                })
+                // In Checkout.jsx
+body: JSON.stringify({
+    to: email,
+    subject: ':kangaroo: Your Aussie Adventure Booking Confirmation!',
+    name: 'Adventurer',
+    message: `You've booked: ${cart.map(i => `${i.title} (x${i.quantity})`).join(', ')}. Total: $${cartTotal.toFixed(2)} AUD.`
+})
             })
             setSuccess(true)
             clearCart()

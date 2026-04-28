@@ -3,7 +3,7 @@
 const transporter = require('../services/email.js')
 // Import the Adventure model for database operations
 const Adventure = require('../models/Adventure')
-
+const { emailTemplate } = require('../services/emailTemplate.js')
 /**
  * getAllAdventures - Retrieves all adventures from the database
  * @param {Object} req - Express request object
@@ -19,6 +19,51 @@ async function getAllAdventures(req, res) {
   } catch (error) {
     // Handle any database or server errors with a 500 status code
     res.status(500).json({ error: 'Unable to load adventures' })
+  }
+}
+/**
+ * findOrInsert - Inserts adventures that don't already exist, skips duplicates by title
+ * @param {Object} req - Express request object containing array of adventures in req.body.adventures
+ * @param {Object} res - Express response object
+ * @returns {JSON} Summary of inserted vs skipped adventures
+ */
+async function findOrInsert(req, res) {
+  try {
+    const { adventures } = req.body
+
+    // Validate that we received an array with at least one item
+    if (!Array.isArray(adventures) || adventures.length === 0) {
+      return res.status(400).json({ error: 'adventures must be a non-empty array' })
+    }
+
+    const inserted = []
+    const skipped = []
+
+    // Loop through each adventure and check if it already exists by title
+    for (const data of adventures) {
+      const existing = await Adventure.findOne({ title: data.title })
+
+      if (existing) {
+        // Already exists — skip it and record the title
+        skipped.push(data.title)
+      } else {
+        // Doesn't exist — create and save it
+        const adventure = new Adventure({
+          ...data,
+          icon: data.icon || ':compass:'
+        })
+        await adventure.save()
+        inserted.push(adventure)
+      }
+    }
+
+    res.status(201).json({
+      message: `${inserted.length} inserted, ${skipped.length} skipped`,
+      inserted,
+      skipped
+    })
+  } catch (error) {
+    res.status(400).json({ error: 'Unable to process adventures', detail: error.message })
   }
 }
 
@@ -180,5 +225,6 @@ module.exports = {
   createAdventure,
   deleteAdventure,
   addComment,sendEmail,
-  editAdventure
+  editAdventure,
+  findOrInsert
 }

@@ -4,6 +4,7 @@ import { CartProvider } from './components/CartContext'
 import Navbar from './components/Navbar'
 import Adventures from './components/Adventures'
 import Checkout from './components/Checkout'
+import { useState } from 'react'
 
 const theme = createTheme({
     palette: {
@@ -33,14 +34,23 @@ const theme = createTheme({
 })
 
 function App() {
+const [isAdmin, setIsAdmin] = useState(false)
+
+const handleAdminToggle = () => {
+        setIsAdmin(prev => !prev)
+        // When real auth is added, this will trigger a login modal or redirect
+    }
+
+
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <CartProvider>
                 <BrowserRouter>
-                    <Navbar />
+                    <Navbar isAdmin={isAdmin} handleAdminToggle={handleAdminToggle}/>
                     <Routes>
-                        <Route path="/" element={<Adventures />} />
+                        <Route path="/" element={<Adventures isAdmin={isAdmin}/>} />
                         <Route path="/checkout" element={<Checkout />} />
                     </Routes>
                 </BrowserRouter>

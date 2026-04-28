@@ -5,95 +5,67 @@ const emailTemplate = (name, message) => {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Email</title>
-        <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-            body {
-                font-family: Arial, sans-serif;
-                background-color: #F4F4F4;
-                padding: 20px;
-            }
-            .container {
-                max-width: 600px;
-                margin: 0 auto;
-                background-color: #FFFFFF;
-                border-radius: 8px;
-                overflow: hidden;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            }
-            .header {
-                background-color: #2C3E50;
-                padding: 30px;
-                text-align: center;
-            }
-            .header h1 {
-                color: #FFFFFF;
-                font-size: 24px;
-            }
-            .body {
-                padding: 30px;
-                color: #333333;
-            }
-            .body h2 {
-                font-size: 20px;
-                margin-bottom: 15px;
-                color: #2C3E50;
-            }
-            .body p {
-                font-size: 16px;
-                line-height: 1.6;
-                margin-bottom: 15px;
-                color: #555555;
-            }
-            .message-box {
-                background-color: #F9F9F9;
-                border-left: 4px solid #2C3E50;
-                padding: 15px;
-                margin: 20px 0;
-                border-radius: 4px;
-            }
-            .button {
-                display: inline-block;
-                padding: 12px 30px;
-                background-color: #2C3E50;
-                color: #FFFFFF !important;
-                text-decoration: none;
-                border-radius: 5px;
-                font-size: 16px;
-                margin: 20px 0;
-            }
-            .footer {
-                background-color: #F4F4F4;
-                padding: 20px;
-                text-align: center;
-                color: #999999;
-                font-size: 12px;
-            }
-        </style>
+        <title>Aussie Adventures</title>
     </head>
-    <body>
-        <div class="container">
-            <div class="header">
-                <h1>:earth_africa: Adventure API</h1>
+    <body style="margin:0;padding:20px;font-family:Arial,sans-serif;background-color:#050d1a;">
+
+        <div style="max-width:600px;margin:0 auto;background-color:#0a1628;border-radius:12px;overflow:hidden;border:1px solid rgba(0,56,168,0.4);">
+
+            <!-- Header -->
+            <div style="background-color:#0a1628;padding:30px;text-align:center;border-bottom:3px solid #CC0000;">
+                <h1 style="color:#ffffff;font-size:26px;margin:0 0 6px;">:kangaroo: Aussie Adventures</h1>
+                <p style="color:#00b4d8;font-size:13px;margin:0;font-style:italic;">Affordable Adventures. Your Data Stays Yours.</p>
             </div>
-            <div class="body">
-                <h2>Hello, ${name}!</h2>
-                <p>Thank you for getting in touch with us. We've received your message and will get back to you shortly.</p>
-                <div class="message-box">
-                    <p><strong>Your message:</strong></p>
-                    <p>${message}</p>
+
+            <!-- Australian flag stripe -->
+            <div style="height:4px;background:linear-gradient(90deg,#00008B 33%,#CC0000 33%,#CC0000 66%,#FFFFFF 66%);"></div>
+
+            <!-- Body -->
+            <div style="padding:32px 30px;background-color:#0a1628;">
+                <h2 style="font-size:22px;margin:0 0 16px;color:#ffffff;font-family:Georgia,serif;">
+                    G'day, ${name}! :earth_asia:
+                </h2>
+                <p style="font-size:15px;line-height:1.7;margin:0 0 16px;color:#a0b4cc;">
+                    Thank you for booking with Aussie Adventures. We've received your request and your adventure awaits!
+                </p>
+
+                <!-- Message box -->
+                <div style="background-color:#0d2144;border-left:4px solid #0038A8;padding:16px;margin:20px 0;border-radius:4px;">
+                    <p style="font-size:14px;color:#00b4d8;margin:0 0 8px;font-weight:bold;">Your message:</p>
+                    <p style="font-size:15px;color:#ccd9e8;margin:0;line-height:1.6;">
+    ${message || 'No adventures selected'}
+</p>
                 </div>
-                <p>In the meantime, feel free to explore our adventures!</p>
-                <a href="http://localhost:3000" class="button">View Adventures</a>
+
+                <p style="font-size:15px;line-height:1.7;margin:0 0 20px;color:#a0b4cc;">
+                    In the meantime, feel free to explore more incredible Australian adventures on our platform!
+                </p>
+
+                <!-- Button -->
+                <div style="text-align:center;margin:24px 0;">
+                    <a href="https://github.com/ErsonAus/Capstone"
+                       style="display:inline-block;padding:14px 36px;background-color:#CC0000;color:#ffffff;text-decoration:none;border-radius:8px;font-size:15px;font-weight:bold;letter-spacing:0.03em;">
+                        View Adventures
+                    </a>
+                </div>
+
+                <!-- Privacy note -->
+                <div style="background-color:#061830;border:1px solid rgba(0,56,168,0.3);border-radius:8px;padding:12px 16px;margin-top:24px;text-align:center;">
+                    <p style="color:#556677;font-size:12px;margin:0;">
+                        :lock: Your privacy is our priority. We never store or share your personal data.
+                    </p>
+                </div>
             </div>
-            <div class="footer">
-                <p>© 2026 Adventure API. All rights reserved.</p>
-                <p>If you did not request this email, please ignore it.</p>
+
+            <!-- Australian flag stripe -->
+            <div style="height:4px;background:linear-gradient(90deg,#00008B 33%,#CC0000 33%,#CC0000 66%,#FFFFFF 66%);"></div>
+
+            <!-- Footer -->
+            <div style="background-color:#050d1a;padding:20px;text-align:center;">
+                <p style="color:#556677;font-size:12px;margin:0 0 4px;">© 2026 Aussie Adventures. All rights reserved.</p>
+                <p style="color:#445566;font-size:11px;margin:0;">If you did not request this email, please ignore it.</p>
             </div>
+
         </div>
     </body>
     </html>
